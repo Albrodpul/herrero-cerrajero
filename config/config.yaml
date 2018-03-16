@@ -1,0 +1,18 @@
+---
+production:
+  use_cors: true
+  use_helmet: true
+  port: 8080
+  logFile: "./prod.log"
+  loggerLevel: info
+  urlMongo: ds159344.mlab.com
+  portMongo: 59344
+  
+development:
+  use_cors: true
+  use_helmet: true
+  port: 8080
+  logFile: "./dev.log"
+  loggerLevel: info
+  urlMongo: localhost
+  portMongo: 27017

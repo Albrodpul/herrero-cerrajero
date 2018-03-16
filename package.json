@@ -1,0 +1,45 @@
+{
+  "name": "swagger-herrero-cerrajero-api",
+  "version": "1.0.0",
+  "description": "A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "swagger"
+  ],
+  "license": "Unlicense",
+  "private": true,
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "bower": "^1.8.2",
+    "compression": "^1.7.1",
+    "connect": "^3.2.0",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "grunt": "^1.0.1",
+    "helmet": "^3.9.0",
+    "jasmine-node": "^1.14.5",
+    "js-yaml": "^3.3.0",
+    "method-override": "^2.3.10",
+    "mongoose": "^5.0.0-rc0",
+    "request": "^2.83.0",
+    "swagger-tools": "0.10.1",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "bower": "^1.8.0",
+    "chai": "^3.5.0",
+    "grunt": "^1.0.1",
+    "grunt-banner": "^0.6.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-dockerize": "0.0.1",
+    "grunt-header": "^1.1.0",
+    "grunt-mocha-test": "^0.13.2",
+    "grunt-release-github": "1.0.4",
+    "mocha": "^3.2.0"
+  }
+}

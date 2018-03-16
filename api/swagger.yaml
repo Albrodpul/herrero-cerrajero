@@ -1,0 +1,112 @@
+---
+swagger: "2.0"
+info:
+  description: "A sample API that uses a petstore as an example to demonstrate features\
+    \ in the swagger-2.0 specification"
+  version: "1.0.0"
+  title: "Swagger herrero-cerrajero"
+  termsOfService: "http://helloreverb.com/terms/"
+  contact:
+    name: "Herrero Cerrajero"
+    url: "https://herrero-cerrajero.herokuapp.com"
+    email: "herrerocerrajero@gmail.com"
+  license:
+    name: "MIT"
+    url: "http://opensource.org/licenses/MIT"
+host: "localhost:8080"
+basePath: "/api/v1"
+schemes:
+- "http"
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /ncuentas:
+    get:
+      tags:
+      - "ncuentas"
+      description: "Devuelve los números de cuentas"
+      operationId: "getCuentas"
+      parameters: 
+      - name: "idAdmin"
+        in: "query"
+        description: "Nombre de administrador"
+        required: false
+        type: "string"        
+      - name: "direccion"
+        in: "query"
+        description: "Dirección"
+        required: false
+        type: "string"               
+      responses:
+        200:
+          description: "Cuentas response"
+          schema:
+            type: "array"
+            title: "Ncuentas"
+            items:
+              $ref: "#/definitions/Ncuentas"
+        404:
+          description: "Not found"
+        500:
+          description: "Internal Server Error"
+      x-swagger-router-controller: "Ncuentas"
+    post:
+      tags:
+      - "ncuentas"
+      description: "Añadir nuevo número de cuenta"
+      operationId: "insertCuenta"
+      parameters:
+      - name: "ncuenta"
+        in: body
+        description: "Número de cuenta que se quiere añadir en JSON"
+        required: true
+        schema: 
+          title: "Ncuentas"
+          type: "array"
+          items:
+            $ref: "#/definitions/Ncuentas"      
+      responses:
+        201:
+          description: "Created"
+        400:
+          description: "Bad request"
+        409:
+          description: "Conflict"
+        422:
+          description: "Unprocessable Entity"
+        500:
+          description: "Internal Server Error"
+      x-swagger-router-controller: "Ncuentas"    
+  /ncuentas/last:
+    get:
+      tags:
+      - "ncuentas"
+      description: "Devuelve el último número de cuenta añadido"
+      operationId: "getCuentaLast"
+      parameters: []
+      responses:
+        200:
+          description: "Cuentas response"
+          schema:
+            type: "array"
+            title: "Ncuentas"
+            items:
+              $ref: "#/definitions/Ncuentas"
+        500:
+          description: "Internal Server Error"
+      x-swagger-router-controller: "Ncuentas"
+definitions:
+  Ncuentas:
+    type: "object"
+    properties:
+      idAdmin:
+        type: "string"
+      direccion:
+        type: "string"
+      iban:
+        type: "string"
+      referencia:
+        type: "string"
