@@ -5,7 +5,10 @@ module.exports = {
   getCuentasByAdmin: getCuentasByAdmin,
   getCuentasByDireccion: getCuentasByDireccion,
   getCuentaLast: getCuentaLast,
-  insertCuenta: insertCuenta
+  insertCuenta: insertCuenta,
+  updateCuentaNoReferencia: updateCuentaNoReferencia,
+  updateCuentaReferencia: updateCuentaReferencia,
+  deleteCuenta: deleteCuenta
 };
 
 const assert = require("assert");
@@ -71,21 +74,45 @@ function getCuentasByDireccion(direccion, callback) {
 }
 
 function getCuentaLast(callback) {
-  modelsMongo.nCuentas.find({}, [], {
-    limit: 1,
-    sort: {
-      referencia: -1
-    }
-  }, function (err, data) {
-    if (err) {
-      callback(err, null); //internal server error
-    } else {
-      if (data.length > 0) {
-        callback(null, data); //get group
+  modelsMongo.nCuentas.find({},
+    function (err, data) {
+      if (err) {
+        callback(err, null); //internal server error
       } else {
-        callback(null, null); //not found
+        if (data.length > 0) {
+          var aux = [];
+          var json = [];
+          for (var i = 0; i < data.length; i++) {
+            if (data[i].referencia) {
+              if (letterCounter(data[i].referencia) == 9) {
+                aux.push(data[i]);
+              }
+            }
+          }
+          json = sortByAttribue(aux, "referencia");
+          callback(null, json[0]); //get group
+        } else {
+          callback(null, null); //not found
+        }
       }
+    });
+}
+
+function letterCounter(str) {
+  var letters = 0;
+  var alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  var ar = alphabet.split("");
+  for (var i = 0; i < str.length; i++) {
+    if (ar.indexOf(str[i]) > -1) {
+      letters = letters + 1;
     }
+  }
+  return letters;
+}
+
+function sortByAttribue(arr, attribute) {
+  return arr.sort(function (a, b) {
+    return a[attribute] < b[attribute];
   });
 }
 
@@ -114,4 +141,89 @@ function insertCuenta(newData, callback) {
       }
     }
   })
+}
+
+function updateCuentaNoReferencia(updateData, idAdmin, direccion, callback) {
+  modelsMongo.nCuentas.find({
+    "idAdmin": idAdmin,
+    "direccion": direccion
+  }, function (err, data) {
+    if (err) {
+      callback(err, null); //internal server error
+    } else {
+      if (data.length > 0) {
+        modelsMongo.nCuentas.update({
+          "idAdmin": idAdmin,
+          "direccion": direccion
+        }, {
+          $set: {
+            "iban": updateData[0].iban
+          }
+        }, function (err) {
+          if (err) {
+            callback(err, null); //internal server error
+          } else {
+            callback(null, data); //updated
+          }
+        });
+      } else {
+        callback(null, null); //not found
+      }
+    }
+  })
+}
+
+function updateCuentaReferencia(updateData, idAdmin, direccion, callback) {
+  modelsMongo.nCuentas.find({
+    "idAdmin": idAdmin,
+    "direccion": direccion
+  }, function (err, data) {
+    if (err) {
+      callback(err, null); //internal server error
+    } else {
+      if (data.length > 0) {
+        modelsMongo.nCuentas.update({
+          "idAdmin": idAdmin,
+          "direccion": direccion,
+          "referencia": data[0].referencia
+        }, {
+          $set: {
+            "iban": updateData[0].iban
+          }
+        }, function (err) {
+          if (err) {
+            callback(err, null); //internal server error
+          } else {
+            callback(null, data); //updated
+          }
+        });
+      } else {
+        callback(null, null); //not found
+      }
+    }
+  })
+}
+
+function deleteCuenta(idAdmin, direccion, callback) {
+  modelsMongo.nCuentas.find({
+    "idAdmin": idAdmin,
+    "direccion": direccion
+  }, function (err, data) {
+    if (err) {
+      callback(err, null); //internal server error
+    } else if (data.length == 0) {
+      callback(null, null); //not found
+    } else {
+      modelsMongo.nCuentas.remove({
+        "idAdmin": idAdmin,
+        "direccion": direccion
+      }, function (err, result) {
+        if (err) {
+          callback(err, null); //internal server error
+        } else {
+          callback(null, result); //deleted
+        }
+      });
+    }
+  });
 }

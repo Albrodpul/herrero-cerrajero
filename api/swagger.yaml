@@ -4,7 +4,7 @@ info:
   description: "A sample API that uses a petstore as an example to demonstrate features\
     \ in the swagger-2.0 specification"
   version: "1.0.0"
-  title: "Swagger herrero-cerrajero"
+  title: "Swagger herrero-cerrajero-api"
   termsOfService: "http://helloreverb.com/terms/"
   contact:
     name: "Herrero Cerrajero"
@@ -98,6 +98,68 @@ paths:
         500:
           description: "Internal Server Error"
       x-swagger-router-controller: "Ncuentas"
+  /ncuentas/{idAdmin}/{direccion}:
+    put:
+      tags:
+      - "ncuentas"
+      description: "Actualiza el número de cuenta dado"
+      operationId: "updateCuenta"
+      parameters:
+      - name: "idAdmin"
+        in: "path"
+        description: "Nombre de administrador"
+        required: true
+        type: "string"        
+      - name: "direccion"
+        in: "path"
+        description: "Dirección"
+        required: true
+        type: "string"        
+      - name: "ncuenta"
+        in: body
+        description: "Número de cuenta que se quiere actualizar en JSON"
+        required: true
+        schema: 
+          title: "Ncuentas"
+          type: "array"
+          items:
+            $ref: "#/definitions/Ncuentas"    
+      responses:
+        200:
+          description: "Updated"
+        400:
+          description: "Bad request"
+        404: 
+          description: "Not found"
+        422:
+          description: "Unprocessable Entity"
+        500:
+          description: "Internal Server Error"    
+      x-swagger-router-controller: "Ncuentas"     
+    delete:
+      tags:
+      - "ncuentas"
+      description: "Actualiza el número de cuenta dado"
+      operationId: "deleteCuenta"
+      parameters:
+      - name: "idAdmin"
+        in: "path"
+        description: "Nombre de administrador"
+        required: true
+        type: "string"        
+      - name: "direccion"
+        in: "path"
+        description: "Dirección"
+        required: true
+        type: "string"           
+      responses:
+        204:
+          description: "Deleted"
+        404: 
+          description: "Not found"
+        500:
+          description: "Internal Server Error"    
+      x-swagger-router-controller: "Ncuentas"                              
 definitions:
   Ncuentas:
     type: "object"
