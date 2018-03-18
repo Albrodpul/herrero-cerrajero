@@ -15,6 +15,7 @@ var CuentasSchema = new Schema({
   idAdmin: String,
   direccion: String,
   iban: String,
+  nif: String,
   referencia: String
 });
 

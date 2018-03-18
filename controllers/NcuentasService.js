@@ -90,7 +90,7 @@ exports.insertCuenta = function (args, res, next) {
     logger.info("Bad Request");
     res.sendStatus(400); // bad request    
   } else {
-    if (ncuenta[0].idAdmin && ncuenta[0].direccion && ncuenta[0].iban && Object.keys(ncuenta[0]).length >= 3) {
+    if (ncuenta[0].idAdmin && ncuenta[0].direccion && ncuenta[0].iban && ncuenta[0].nif && Object.keys(ncuenta[0]).length >= 4) {
       mongo.insertCuenta(ncuenta, function (err, data) {
         if (err) {
           logger.info(err);
@@ -126,7 +126,7 @@ exports.updateCuenta = function (args, res, next) {
     logger.info("Bad Request");
     res.sendStatus(400); // bad request    
   } else {
-    if (ncuenta[0].idAdmin && ncuenta[0].direccion && ncuenta[0].iban && Object.keys(ncuenta[0]).length >= 3) {
+    if (ncuenta[0].idAdmin && ncuenta[0].direccion && ncuenta[0].iban && ncuenta[0].nif && Object.keys(ncuenta[0]).length >= 4) {
       if (ncuenta[0].referencia) {
         mongo.updateCuentaNoReferencia(ncuenta, idAdmin, direccion, function (err, flag) {
           if (err) {

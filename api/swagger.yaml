@@ -170,5 +170,7 @@ definitions:
         type: "string"
       iban:
         type: "string"
+      nif:
+        type: "string"
       referencia:
         type: "string"

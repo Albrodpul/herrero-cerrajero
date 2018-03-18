@@ -80,17 +80,35 @@ function getCuentaLast(callback) {
         callback(err, null); //internal server error
       } else {
         if (data.length > 0) {
-          var aux = [];
+          var referenciaList = [];
+          var referenciList = [];
           var json = [];
           for (var i = 0; i < data.length; i++) {
             if (data[i].referencia) {
+              if (letterCounter(data[i].referencia) == 10) {
+                referenciaList.push(data[i]);
+              }
               if (letterCounter(data[i].referencia) == 9) {
-                aux.push(data[i]);
+                referenciList.push(data[i]);
               }
             }
           }
-          json = sortByAttribue(aux, "referencia");
-          callback(null, json[0]); //get group
+          if (referenciList.length > 0) {
+            referenciList.sort(function (a, b) {
+              return a.referencia.localeCompare(b.referencia, "en", {
+                numeric: true
+              });
+            });
+            json=referenciList;
+          } else {
+            referenciaList.sort(function (a, b) {
+              return a.referencia.localeCompare(b.referencia, "en", {
+                numeric: true
+              });
+            });
+            json=referenciaList;
+          }
+          callback(null, json[json.length-1]); //get group
         } else {
           callback(null, null); //not found
         }
@@ -108,12 +126,6 @@ function letterCounter(str) {
     }
   }
   return letters;
-}
-
-function sortByAttribue(arr, attribute) {
-  return arr.sort(function (a, b) {
-    return a[attribute] < b[attribute];
-  });
 }
 
 function insertCuenta(newData, callback) {
@@ -157,6 +169,7 @@ function updateCuentaNoReferencia(updateData, idAdmin, direccion, callback) {
           "direccion": direccion
         }, {
           $set: {
+            "nif": updateData[0].nif,
             "iban": updateData[0].iban
           }
         }, function (err) {
@@ -188,6 +201,7 @@ function updateCuentaReferencia(updateData, idAdmin, direccion, callback) {
           "referencia": data[0].referencia
         }, {
           $set: {
+            "nif": updateData[0].nif,
             "iban": updateData[0].iban
           }
         }, function (err) {
