@@ -139,7 +139,7 @@ paths:
     delete:
       tags:
       - "ncuentas"
-      description: "Actualiza el número de cuenta dado"
+      description: "Borra un número de cuenta dado"
       operationId: "deleteCuenta"
       parameters:
       - name: "idAdmin"
@@ -159,7 +159,116 @@ paths:
           description: "Not found"
         500:
           description: "Internal Server Error"    
-      x-swagger-router-controller: "Ncuentas"                              
+      x-swagger-router-controller: "Ncuentas"    
+  /facturas:
+    get:
+      tags:
+      - "facturas"
+      description: "Devuelve todas las facturas"
+      operationId: "getFacturas"
+      parameters: 
+      - name: "idAdmin"
+        in: "query"
+        description: "Nombre de administrador"
+        required: false
+        type: "string"        
+      - name: "direccion"
+        in: "query"
+        description: "Dirección"
+        required: false
+        type: "string"               
+      responses:
+        200:
+          description: "Facturas response"
+          schema:
+            type: "array"
+            title: "Ncuentas"
+            items:
+              $ref: "#/definitions/Facturas"
+        404:
+          description: "Not found"
+        500:
+          description: "Internal Server Error"
+      x-swagger-router-controller: "Facturas"        
+    post:
+      tags:
+      - "facturas"
+      description: "Añadir nueva factura"
+      operationId: "insertFactura"
+      parameters:
+      - name: "factura"
+        in: body
+        description: "Factura que se quiere añadir en JSON"
+        required: true
+        schema: 
+          title: "Facturas"
+          type: "array"
+          items:
+            $ref: "#/definitions/Facturas"      
+      responses:
+        201:
+          description: "Created"
+        400:
+          description: "Bad request"
+        409:
+          description: "Conflict"
+        422:
+          description: "Unprocessable Entity"
+        500:
+          description: "Internal Server Error"
+      x-swagger-router-controller: "Facturas"    
+  /facturas/{numero}:
+    put:
+      tags:
+      - "facturas"
+      description: "Actualiza una factura dada"
+      operationId: "updateFactura"
+      parameters:
+      - name: "numero"
+        in: "path"
+        description: "Numero de factura"
+        required: true
+        type: "string"         
+      - name: "factura"
+        in: body
+        description: "Factura que se quiere actualizar en JSON"
+        required: true
+        schema: 
+          title: "Facturas"
+          type: "array"
+          items:
+            $ref: "#/definitions/Facturas"     
+      responses:
+        200:
+          description: "Updated"
+        400:
+          description: "Bad request"
+        404: 
+          description: "Not found"
+        422:
+          description: "Unprocessable Entity"
+        500:
+          description: "Internal Server Error"    
+      x-swagger-router-controller: "Facturas"   
+    delete:
+      tags:
+      - "facturas"
+      description: "Borra una factura dada"
+      operationId: "deleteFactura"
+      parameters:
+      - name: "numero"
+        in: "path"
+        description: "Numero de factura"
+        required: true
+        type: "string"                 
+      responses:
+        204:
+          description: "Deleted"
+        404: 
+          description: "Not found"
+        500:
+          description: "Internal Server Error"    
+      x-swagger-router-controller: "Facturas"                        
 definitions:
   Ncuentas:
     type: "object"
@@ -174,3 +283,16 @@ definitions:
         type: "string"
       referencia:
         type: "string"
+  Facturas:
+    type: "object"
+    properties:
+      fecha:
+        type: "string"
+      idAdmin:
+        type: "string"
+      direccion:
+        type: "string"
+      numero:
+        type: "string"
+      estado:
+        type: "string"     

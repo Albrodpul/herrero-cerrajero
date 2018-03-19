@@ -3,11 +3,11 @@
 const request = require("request");
 const Promise = require("bluebird");
 
-const mongo = require("../utils/mongoCuentas");
+const mongo = require("../utils/mongoFacturas");
 const config = require("../config/config");
 const logger = require("../config/logConfig");
 
-exports.getCuentas = function (args, res, next) {
+exports.getFacturas = function (args, res, next) {
   /**
    * Devuelve los números de cuentas
    *
@@ -17,8 +17,8 @@ exports.getCuentas = function (args, res, next) {
   var direccion = args.direccion.value;
   logger.info("Get " + idAdmin + " " + direccion);
   if (!idAdmin && !direccion) {
-    logger.info("Get Cuentas");
-    mongo.getCuentas(function (err, data) {
+    logger.info("Get Facturas");
+    mongo.getFacturas(function (err, data) {
       if (err) {
         logger.info(err);
         res.sendStatus(500); // internal server error
@@ -28,7 +28,7 @@ exports.getCuentas = function (args, res, next) {
       }
     });
   } else if (idAdmin && !direccion) {
-    mongo.getCuentasByAdmin(idAdmin, function (err, data) {
+    mongo.getFacturasByAdmin(idAdmin, function (err, data) {
       if (err) {
         logger.info(err);
         res.sendStatus(500); // internal server error
@@ -41,7 +41,7 @@ exports.getCuentas = function (args, res, next) {
       }
     });
   } else if (!idAdmin && direccion) {
-    mongo.getCuentasByDireccion(direccion, function (err, data) {
+    mongo.getFacturasByDireccion(direccion, function (err, data) {
       if (err) {
         logger.info(err);
         res.sendStatus(500); // internal server error
@@ -59,39 +59,21 @@ exports.getCuentas = function (args, res, next) {
   }
 }
 
-exports.getCuentaLast = function (args, res, next) {
-  /**
-   * Devuelve los números de cuentas
-   *
-   * returns List
-   **/
-  logger.info("Get última cuenta");
-  mongo.getCuentaLast(function (err, data) {
-    if (err) {
-      logger.info(err);
-      res.sendStatus(500); // internal server error
-    } else {
-      logger.info("Get!");
-      res.send(data);
-    }
-  });
-}
-
-exports.insertCuenta = function (args, res, next) {
+exports.insertFactura = function (args, res, next) {
   /**
    * Insert a new render
    *
    * render List The render JSON you want to post
    * no response value expected for this operation
    **/
-  var ncuenta = args.ncuenta.value;
+  var factura = args.factura.value;
   logger.info("Inserting document");
-  if (!ncuenta[0]) {
+  if (!factura[0]) {
     logger.info("Bad Request");
     res.sendStatus(400); // bad request    
   } else {
-    if (ncuenta[0].idAdmin && ncuenta[0].direccion && ncuenta[0].iban && ncuenta[0].nif && Object.keys(ncuenta[0]).length >= 4) {
-      mongo.insertCuenta(ncuenta, function (err, data) {
+    if (factura[0].fecha && factura[0].idAdmin && factura[0].direccion && factura[0].numero && factura[0].estado && Object.keys(factura[0]).length == 5) {
+      mongo.insertFactura(factura, function (err, data) {
         if (err) {
           logger.info(err);
           res.sendStatus(500); // internal server error
@@ -111,23 +93,22 @@ exports.insertCuenta = function (args, res, next) {
   }
 }
 
-exports.updateCuenta = function (args, res, next) {
+exports.updateFactura = function (args, res, next) {
   /**
    * Insert a new render
    *
    * render List The render JSON you want to post
    * no response value expected for this operation
    **/
-  var ncuenta = args.ncuenta.value;
-  var idAdmin = args.idAdmin.value;
-  var direccion = args.direccion.value;
+  var factura = args.factura.value;
+  var numero = args.numero.value;
   logger.info("Updating document");
-  if (!ncuenta[0] || !idAdmin || !direccion || ncuenta[0].idAdmin != idAdmin || ncuenta[0].direccion != direccion) {
+  if (!factura[0] || !numero || factura[0].numero != numero) {
     logger.info("Bad Request");
     res.sendStatus(400); // bad request    
   } else {
-    if (ncuenta[0].idAdmin && ncuenta[0].direccion && ncuenta[0].iban && ncuenta[0].nif && Object.keys(ncuenta[0]).length >= 4) {
-        mongo.updateCuenta(ncuenta, idAdmin, direccion, function (err, flag) {
+    if (factura[0].fecha && factura[0].idAdmin && factura[0].direccion && factura[0].numero && factura[0].estado && Object.keys(factura[0]).length == 5) {
+        mongo.updateFactura(factura, numero, function (err, flag) {
           if (err) {
             logger.info(err);
             res.sendStatus(500); // internal server error
@@ -147,7 +128,7 @@ exports.updateCuenta = function (args, res, next) {
   }
 }
 
-exports.deleteCuenta = function (args, res, next) {
+exports.deleteFactura = function (args, res, next) {
   /**
    * Delete an existing group
    *
@@ -155,14 +136,13 @@ exports.deleteCuenta = function (args, res, next) {
    * year String An existing year of the group
    * no response value expected for this operation
    **/
-  var idAdmin = args.idAdmin.value;
-  var direccion = args.direccion.value;
-  logger.info("Deleting " + idAdmin + " " + direccion);
-  if (!idAdmin || !direccion) {
+  var numero = args.numero.value;
+  logger.info("Deleting " + numero);
+  if (!numero) {
     logger.info("Bad Request");
     res.sendStatus(400).end();
   } else {
-    mongo.deleteCuenta(idAdmin, direccion, function (err, result) {
+    mongo.deleteFactura(numero, function (err, result) {
       if (err) {
         logger.info(err);
         res.sendStatus(500).end(); // internal server error
