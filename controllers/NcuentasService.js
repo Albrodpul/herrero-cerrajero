@@ -127,8 +127,7 @@ exports.updateCuenta = function (args, res, next) {
     res.sendStatus(400); // bad request    
   } else {
     if (ncuenta[0].idAdmin && ncuenta[0].direccion && ncuenta[0].iban && ncuenta[0].nif && Object.keys(ncuenta[0]).length >= 4) {
-      if (ncuenta[0].referencia) {
-        mongo.updateCuentaNoReferencia(ncuenta, idAdmin, direccion, function (err, flag) {
+        mongo.updateCuenta(ncuenta, idAdmin, direccion, function (err, flag) {
           if (err) {
             logger.info(err);
             res.sendStatus(500); // internal server error
@@ -141,21 +140,6 @@ exports.updateCuenta = function (args, res, next) {
             res.sendStatus(404); //not found
           }
         });
-      } else {
-        mongo.updateCuentaReferencia(ncuenta, idAdmin, direccion, function (err, flag) {
-          if (err) {
-            logger.info(err);
-            res.sendStatus(500); // internal server error
-          } else if (flag) {
-            logger.info("404 Not found");
-            res.sendStatus(404); //not found
-          } else {
-            logger.info("Updated!");
-            res.sendStatus(200); // created
-            res.end();
-          }
-        });
-      }
     } else {
       logger.info("Unprocessable entity");
       res.sendStatus(422); // unprocessable entity

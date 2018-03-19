@@ -6,8 +6,7 @@ module.exports = {
   getCuentasByDireccion: getCuentasByDireccion,
   getCuentaLast: getCuentaLast,
   insertCuenta: insertCuenta,
-  updateCuentaNoReferencia: updateCuentaNoReferencia,
-  updateCuentaReferencia: updateCuentaReferencia,
+  updateCuenta: updateCuenta,
   deleteCuenta: deleteCuenta
 };
 
@@ -155,7 +154,7 @@ function insertCuenta(newData, callback) {
   })
 }
 
-function updateCuentaNoReferencia(updateData, idAdmin, direccion, callback) {
+function updateCuenta(updateData, idAdmin, direccion, callback) {
   modelsMongo.nCuentas.find({
     "idAdmin": idAdmin,
     "direccion": direccion
@@ -170,39 +169,8 @@ function updateCuentaNoReferencia(updateData, idAdmin, direccion, callback) {
         }, {
           $set: {
             "nif": updateData[0].nif,
-            "iban": updateData[0].iban
-          }
-        }, function (err) {
-          if (err) {
-            callback(err, null); //internal server error
-          } else {
-            callback(null, data); //updated
-          }
-        });
-      } else {
-        callback(null, null); //not found
-      }
-    }
-  })
-}
-
-function updateCuentaReferencia(updateData, idAdmin, direccion, callback) {
-  modelsMongo.nCuentas.find({
-    "idAdmin": idAdmin,
-    "direccion": direccion
-  }, function (err, data) {
-    if (err) {
-      callback(err, null); //internal server error
-    } else {
-      if (data.length > 0) {
-        modelsMongo.nCuentas.update({
-          "idAdmin": idAdmin,
-          "direccion": direccion,
-          "referencia": data[0].referencia
-        }, {
-          $set: {
-            "nif": updateData[0].nif,
-            "iban": updateData[0].iban
+            "iban": updateData[0].iban,
+            "referencia": updateData[0].referencia
           }
         }, function (err) {
           if (err) {
